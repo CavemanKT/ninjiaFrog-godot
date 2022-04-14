@@ -10,11 +10,17 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "KinematicBody2D",
+"class": "Character",
+"language": "GDScript",
+"path": "res://Characters/Character.gd"
+}, {
+"base": "Character",
 "class": "Enemy",
 "language": "GDScript",
 "path": "res://Characters/enemies/Enemy.gd"
 } ]
 _global_script_class_icons={
+"Character": "",
 "Enemy": ""
 }
 
@@ -86,7 +92,8 @@ jump={
 2d_physics/layer_4="Player"
 2d_physics/layer_5="Enemy"
 2d_physics/layer_7="PlayerHitBox"
-2d_physics/layer_11="EnemyHurtBox"
+2d_physics/layer_8="PlayerHurtBox"
+2d_physics/layer_11="EnemyHitBox"
 2d_physics/layer_12="JumpHurtBox"
 
 [physics]

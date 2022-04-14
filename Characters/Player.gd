@@ -1,42 +1,74 @@
-extends KinematicBody2D
+extends Character
 
 export(float) var move_speed = 200
 export(float) var jump_impulse = 600
 export(int) var max_jumps = 2
 export(float) var enemy_bounce_impulse = 400
 export(float) var jump_damage = 1
-
-enum STATE {IDLE, RUN, JUMP, DOUBLE_JUMP, FALL, WALL_JUMP, HIT}
+export(bool) var facing_right = true
+export(float) var knockback_collision_speed = 75
+export(float) var wall_slide_friction = 0.5
+enum STATE {IDLE, RUN, JUMP, DOUBLE_JUMP, FALL, WALL_SLIDE, HIT}
 
 onready var animated_sprite = $AnimatedSprite
 onready var animation_tree = $AnimationTree
 onready var jump_hitbox = $JumpHitBox
-
+onready var invincible_timer = $InvincibleTimer
 signal changed_state(new_state_str, new_state_id)
 
 var velocity : Vector2
 
 var current_state = STATE.IDLE setget set_current_state # does this mean every time current_state is assigned a new value, set_current_state has to run itself.
-
 var jumps = 0
+var is_boarding_wall = false
 
 func _physics_process(delta):
 	var input = get_player_input()
+
+	velocity = move_and_slide(velocity, Vector2.UP)    # after the collision, the the set of velocity will be zero.
+	is_boarding_wall = get_is_on_wall_raycast_test()
+	set_anim_parameters()
+	
+	match(current_state):
+		STATE.IDLE, STATE.RUN, STATE.JUMP, STATE.DOUBLE_JUMP, STATE.FALL:
+			velocity = normal_move(input)
+			pick_next_state()
+		STATE.HIT:
+			velocity = hit_move()
+		STATE.WALL_SLIDE:
+			velocity = wall_slide_move()
+			pick_next_state()
+			
+func normal_move(input):
 	adjust_flip_direction(input)
-	velocity = Vector2(
+	return Vector2(
 		input.x * move_speed,
 		min(velocity.y + GameSettings.gravity, GameSettings.terminal_velocity)  
 	)
+
+func hit_move():
+	var knockback_direction : Vector2
 	
-	velocity = move_and_slide(velocity, Vector2.UP)    # after the collision, the the set of velocity will be zero.
-	set_anim_parameters()
-	pick_next_state()
+	var angry_pig_facing_right = get_parent().get_node("AngryPig").animated_sprite.flip_h
+	#if AngryPid facing right, knock player to right
+	if(angry_pig_facing_right):
+		knockback_direction = Vector2.RIGHT
+	else:
+	#if AngryPid facing left, knock player to left
+		knockback_direction = Vector2.LEFT
+	return Vector2(knockback_collision_speed * knockback_direction.x, 0)
+
+func wall_slide_move():
+	return Vector2(
+		velocity.x,
+		min(velocity.y + (GameSettings.gravity * wall_slide_friction), GameSettings.terminal_velocity)
+	)
 
 func adjust_flip_direction(input: Vector2):
 	if(sign(input.x) == 1):
-		animated_sprite.flip_h = false
+		animated_sprite.flip_h = !facing_right
 	elif(sign(input.x) == -1):
-		animated_sprite.flip_h = true
+		animated_sprite.flip_h = facing_right
 
 func set_anim_parameters():
 	animation_tree.set("parameters/x_sign/blend_position", sign(velocity.x))
@@ -51,10 +83,18 @@ func pick_next_state():
 			self.current_state = STATE.RUN
 		else:
 			self.current_state = STATE.IDLE
-	else:
-		if(Input.is_action_just_pressed('jump') && jumps < max_jumps):
+	elif(Input.is_action_just_pressed('jump') && jumps < max_jumps):
+		if(is_boarding_wall):
+			self.current_state = STATE.JUMP
+		else:
+			if(jumps == 0):
+				jumps = 1
 			self.current_state = STATE.DOUBLE_JUMP
-
+		
+	elif(is_boarding_wall):
+		self.current_state = STATE.WALL_SLIDE
+	else:
+		self.current_state = STATE.FALL
 
 	
 func get_player_input():
@@ -64,6 +104,21 @@ func get_player_input():
 	input.y = Input.get_action_strength("down") - Input.get_action_strength("up")
 	return input
 	
+	
+#flip the direction of the animated sprite
+func get_facing_direction():
+	if(animated_sprite.flip_h == false):
+		return Vector2.RIGHT
+	else:
+		return Vector2.LEFT
+	
+func get_is_on_wall_raycast_test():
+	var space_state = get_world_2d().direct_space_state
+	var result = space_state.intersect_ray(global_position, global_position + 10 * get_facing_direction(), [self], self.collision_mask)
+	if(result.size() > 0):
+		return true
+	else:
+		return false
 	
 func jump():
 	velocity.y = -jump_impulse
@@ -81,6 +136,16 @@ func _on_JumpHitBox_area_shape_entered(area_rid, area, area_shape_index, local_s
 			
 			enemy.get_hit(jump_damage)
 		
+		
+func get_hit(damage: float):
+	if(invincible_timer.is_stopped()):
+		self.health -= damage
+		self.current_state = STATE.HIT
+		invincible_timer.start()
+	
+func on_hit_finished():
+	self.current_state = STATE.IDLE
+
 # SETTERS
 func set_current_state(new_state):
 	match(new_state):
@@ -89,7 +154,10 @@ func set_current_state(new_state):
 		STATE.DOUBLE_JUMP:
 			jump()
 			animation_tree.set('parameters/double_jump/active', true)
-		
+		STATE.HIT:
+			animation_tree.set('parameters/hit/active', true)
+
+			
 	current_state = new_state
 	emit_signal("changed_state", STATE.keys()[new_state], new_state)
 	

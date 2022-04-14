@@ -12,6 +12,7 @@ var waypoint_position
 var waypoint_index setget set_waypoint_index
 var velocity = Vector2.ZERO
 var current_state = STATE.WALK
+var facing_right = true
 
 onready var animated_sprite = $AnimatedSprite
 onready var animation_tree = $AnimationTree
@@ -45,9 +46,9 @@ func _physics_process(delta):
 		
 		#flip the direction 
 		if(direction_x_sign > 0):
-			animated_sprite.flip_h = true
+			animated_sprite.flip_h = facing_right
 		else:
-			animated_sprite.flip_h = false
+			animated_sprite.flip_h = !facing_right
 		
 		move_and_slide(velocity, Vector2.UP)
 	else:
@@ -72,9 +73,8 @@ func _on_AngryDectionZone_body_shape_exited(body_rid, body, body_shape_index, lo
 
 
 func get_hit(damage: float):
-	health -= damage
-	if(health <= 0):
-		queue_free()
+	self.health -= damage
+
 	can_be_hit = false
 	current_state = STATE.HIT
 	var anim_selection = GameSettings.RandGen.randi_range(0, 1)
@@ -90,3 +90,5 @@ func set_waypoint_index(value):
 func _hit_animation_finish():
 	can_be_hit = true
 	current_state = STATE.RUN
+
+
