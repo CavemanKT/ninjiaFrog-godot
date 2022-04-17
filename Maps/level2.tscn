@@ -1,0 +1,95 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://Maps/terrain.tres" type="TileSet" id=1]
+[ext_resource path="res://assets/Pixel Adventure 1/Free/Background/Blue.png" type="Texture" id=2]
+[ext_resource path="res://Characters/Player.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Characters/enemies/AngryPig.tscn" type="PackedScene" id=4]
+[ext_resource path="res://cameras/FollowCamera.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Screens/GameOverScreen.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Zones/BottomOfScreen.gd" type="Script" id=7]
+[ext_resource path="res://Zones/BottomOfScreen.tscn" type="PackedScene" id=8]
+[ext_resource path="res://Zones/MapMove.tscn" type="PackedScene" id=9]
+[ext_resource path="res://Characters/enemies/Bee.tscn" type="PackedScene" id=10]
+
+[node name="level2" type="Node2D"]
+
+[node name="bg" type="Sprite" parent="."]
+position = Vector2( 588, -481 )
+texture = ExtResource( 2 )
+region_enabled = true
+region_rect = Rect2( 0, 0, 1200, 1000 )
+
+[node name="MapMove" parent="." instance=ExtResource( 9 )]
+position = Vector2( 473, -329 )
+
+[node name="TileMap" type="TileMap" parent="."]
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 16, 16 )
+format = 1
+
+[node name="TileMap" type="TileMap" parent="TileMap"]
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 16, 16 )
+format = 1
+tile_data = PoolIntArray( -1376230, 6, 0, -1376229, 6, 0, -1376228, 6, 0, -1376227, 6, 0, -1376226, 6, 0, -1376225, 6, 0, -1376222, 6, 0, -1376221, 6, 0, -1376220, 6, 0, -1376219, 6, 0, -1376218, 6, 0, -1376217, 6, 0, -1376216, 6, 0, -1376215, 6, 0, -1376214, 6, 0, -1376213, 6, 0, -1376212, 6, 0, -1376211, 6, 0, -1310674, 6, 0, -1310668, 6, 0, -1310667, 6, 0, -1310666, 6, 0, -1310665, 6, 0, -1310664, 6, 0, -1310663, 6, 0, -1310662, 6, 0, -1310661, 6, 0, -1310660, 6, 0, -1310659, 6, 0, -1310658, 6, 0, -1310657, 6, 0, -1310656, 6, 0, -1310655, 6, 0, -1310654, 6, 0, -1114041, 6, 0, -1114040, 6, 0, -1114039, 6, 0, -1048563, 11, 0, -1048562, 11, 1, -1048561, 11, 1, -1048560, 11, 2, -1048553, 11, 0, -1048552, 11, 1, -1048551, 11, 1, -1048550, 11, 2, -983023, 11, 0, -983022, 11, 1, -983021, 11, 1, -983020, 11, 1, -983019, 11, 1, -983018, 11, 1, -983017, 11, 0, -851904, 6, 0, -851903, 6, 0, -851902, 6, 0, -851901, 6, 0, -851900, 6, 0, -851899, 6, 0, -786426, 6, 0, -786425, 6, 0, -720889, 6, 0, -720883, 6, 0, -720882, 6, 1, -720881, 6, 2, -720867, 6, 0, -655353, 6, 0, -655347, 6, 65536, -655346, 6, 65537, -655345, 6, 65538, -655331, 6, 0, -655330, 6, 1, -655329, 6, 1, -655328, 6, 1, -655327, 6, 1, -655326, 6, 1, -655325, 6, 2, -589817, 6, 0, -589811, 6, 65536, -589810, 6, 65537, -589809, 6, 65538, -589798, 6, 0, -589797, 6, 1, -589796, 6, 1, -589795, 6, 65540, -589794, 6, 65537, -589793, 6, 65537, -589792, 6, 65537, -589791, 6, 65537, -589790, 6, 3, -589789, 6, 131074, -589771, 6, 0, -589770, 6, 0, -589769, 6, 0, -589768, 6, 0, -589767, 6, 0, -589766, 6, 0, -589765, 6, 0, -589764, 6, 0, -589763, 6, 0, -589762, 6, 0, -589761, 6, 0, -589760, 6, 0, -524281, 6, 0, -524275, 6, 65536, -524274, 6, 65537, -524273, 6, 65538, -524262, 6, 65536, -524261, 6, 65537, -524260, 6, 65537, -524259, 6, 65537, -524258, 6, 3, -524257, 6, 131073, -524256, 6, 131073, -524255, 6, 131073, -524254, 6, 131074, -458745, 6, 0, -458739, 6, 65536, -458738, 6, 65537, -458737, 6, 65538, -458726, 6, 65536, -458725, 6, 3, -458724, 6, 131073, -458723, 6, 131073, -458722, 6, 131074, -393209, 6, 0, -393208, 6, 1, -393207, 6, 1, -393206, 6, 1, -393205, 6, 1, -393204, 6, 1, -393203, 6, 65540, -393202, 6, 65537, -393201, 6, 65539, -393200, 6, 1, -393199, 6, 1, -393198, 6, 1, -393197, 6, 1, -393196, 6, 1, -393195, 6, 1, -393194, 6, 1, -393193, 6, 1, -393192, 6, 1, -393191, 6, 1, -393190, 6, 65540, -393189, 6, 65538, -327673, 6, 65536, -327672, 6, 65537, -327671, 6, 65537, -327670, 6, 65537, -327669, 6, 65537, -327668, 6, 65537, -327667, 6, 65537, -327666, 6, 65537, -327665, 6, 65537, -327664, 6, 65537, -327663, 6, 65537, -327662, 6, 65537, -327661, 6, 65537, -327660, 6, 65537, -327659, 6, 65537, -327658, 6, 65537, -327657, 6, 65537, -327656, 6, 65537, -327655, 6, 65537, -327654, 6, 65537, -327653, 6, 65538, -262137, 6, 131072, -262136, 6, 131073, -262135, 6, 131073, -262134, 6, 131073, -262133, 6, 131073, -262132, 6, 131073, -262131, 6, 131073, -262130, 6, 131073, -262129, 6, 131073, -262128, 6, 131073, -262127, 6, 131073, -262126, 6, 131073, -262125, 6, 131073, -262124, 6, 131073, -262123, 6, 131073, -262122, 6, 131073, -262121, 6, 131073, -262120, 6, 131073, -262119, 6, 131073, -262118, 6, 131073, -262117, 6, 131074, -262105, 6, 0, -262104, 6, 0, -262103, 6, 0, -262102, 6, 0, -262101, 6, 0, -262100, 6, 0, -262099, 6, 0, -262098, 6, 0, -262097, 6, 0, -262096, 6, 0, -262095, 6, 0, -262094, 6, 0, -262093, 6, 0, -262092, 6, 0 )
+
+[node name="Player" parent="." instance=ExtResource( 3 )]
+position = Vector2( 179, -120 )
+
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="Player"]
+remote_path = NodePath("../../FollowCamera")
+
+[node name="FollowCamera" parent="." instance=ExtResource( 5 )]
+position = Vector2( 179, -120 )
+
+[node name="TopLeft" parent="FollowCamera/Bounds" index="0"]
+position = Vector2( 0, -1012 )
+
+[node name="BottomRight" parent="FollowCamera/Bounds" index="1"]
+position = Vector2( 1216, -12 )
+
+[node name="AngryPig" parent="." instance=ExtResource( 4 )]
+position = Vector2( 401, -113 )
+waypoints = [ NodePath("../Waypoints/Waypoint1"), NodePath("../Waypoints/Waypoint2") ]
+
+[node name="AngryPig2" parent="." instance=ExtResource( 4 )]
+position = Vector2( 720, -82 )
+waypoints = [ NodePath("../Waypoints/Waypoint3"), NodePath("../Waypoints/Waypoint4") ]
+
+[node name="Bee" parent="." instance=ExtResource( 10 )]
+position = Vector2( 312, -272 )
+waypoints = [ NodePath("../Waypoints/Waypoint5"), NodePath("../Waypoints/Waypoint6") ]
+
+[node name="Waypoints" type="Node2D" parent="."]
+
+[node name="Waypoint1" type="Position2D" parent="Waypoints"]
+position = Vector2( 276, -108 )
+
+[node name="Waypoint2" type="Position2D" parent="Waypoints"]
+position = Vector2( 397, -116 )
+
+[node name="Waypoint3" type="Position2D" parent="Waypoints"]
+position = Vector2( 645, -81 )
+
+[node name="Waypoint4" type="Position2D" parent="Waypoints"]
+position = Vector2( 834, -83 )
+
+[node name="Waypoint5" type="Position2D" parent="Waypoints"]
+position = Vector2( 312, -312 )
+
+[node name="Waypoint6" type="Position2D" parent="Waypoints"]
+position = Vector2( 312, -184 )
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="GameOverScreen" parent="CanvasLayer" instance=ExtResource( 6 )]
+
+[node name="BottomOfScreen" parent="." instance=ExtResource( 8 )]
+collision_layer = 0
+collision_mask = 8
+monitorable = false
+script = ExtResource( 7 )
+
+[connection signal="body_shape_entered" from="BottomOfScreen" to="BottomOfScreen" method="_on_BottomOfScreen_body_shape_entered"]
+
+[editable path="FollowCamera"]
